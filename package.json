@@ -1,0 +1,28 @@
+{
+  "author": "Yacine Touati",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "description": "an HTTP-based scraping service",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "keywords": [
+    "scraping",
+    "playwright"
+  ],
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "start": "yarn build && node dist/index.js"
+  },
+  "name": "scraping-service",
+  "version": "1.0.0"
+}
