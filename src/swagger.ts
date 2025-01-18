@@ -7,6 +7,20 @@ const swaggerDocument: SwaggerOptions = {
     version: '1.0.0',
     description: 'An HTTP-based scraping service using Playwright'
   },
+  components: {
+    securitySchemes: {
+      ApiKeyAuth: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-scraping-service-key'
+      }
+    }
+  },
+  security: [
+    {
+      ApiKeyAuth: []
+    }
+  ],
   servers: [
     {
       url: 'http://localhost:6003',
@@ -89,6 +103,21 @@ const swaggerDocument: SwaggerOptions = {
                 }
               }
             }
+          },
+          '401': {
+            description: 'Unauthorized - Invalid or missing API key',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    msg: {
+                      type: 'string'
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -134,6 +163,21 @@ const swaggerDocument: SwaggerOptions = {
                         description: 'scraped text content from each webpage'
                       },
                       description: 'array of scraped text content, one string per URL, in the same order as the input'
+                    }
+                  }
+                }
+              }
+            }
+          },
+          '401': {
+            description: 'Unauthorized - Invalid or missing API key',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    msg: {
+                      type: 'string'
                     }
                   }
                 }

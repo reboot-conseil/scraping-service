@@ -3,6 +3,7 @@ import { Router } from "express";
 import ApiResponseInfra from "./infra/ApiResponseInfra";
 import getWebpagesText, { getWebpageText } from "./getWebpagesText";
 import BrowserInfra from "./infra/BrowserInfra";
+import apiKeyMiddleware from "./apiKeyMiddleware";
 
 const router = Router();
 
@@ -10,14 +11,14 @@ router.get('/', (req, res) => {
     res.json(new ApiResponseInfra("scraping service is running", null));
 });
 
-router.post('/scrape-multiple', async (req, res) => {
+router.post('/scrape-multiple', apiKeyMiddleware, async (req, res) => {
     const { urls } = req.body;
 
     const webpagesText = await getWebpagesText(urls);
     res.json(new ApiResponseInfra("webpages scraped successfully", webpagesText));
 });
 
-router.post('/scrape-single', async (req, res) => {
+router.post('/scrape-single', apiKeyMiddleware, async (req, res) => {
     const { url } = req.body;
 
     if(!url) {
