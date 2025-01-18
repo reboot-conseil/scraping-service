@@ -1,0 +1,3 @@
+- [ ] speed up CI/CD pipeline by:
+  - [ ] creating a base image containing the Playwright dependencies + deploy it to Google Artifact Registry
+  - [ ] using the base image in the Dockerfile
