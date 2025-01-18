@@ -1,0 +1,56 @@
+name: cd
+
+on:
+  # this action will only run on each push to main (continuous deployment)
+  push:
+    branches: ["main"]
+
+jobs:
+  build-publish-deploy:
+    name: Build, Publish, And Deploy To Cloud Run
+    runs-on: ubuntu-latest
+    environment: live
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # build and publish the Docker image to the GCP Artifact Registry
+      - name: Login to GAR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.GCP_REGION }}-docker.pkg.dev
+          username: _json_key
+          password: ${{ secrets.GCP_SA_KEY }}
+      - id: docker-push-tagged
+        name: Tag Docker image and push to Google Artifact Registry
+        uses: docker/build-push-action@v6
+        with:
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.GCP_ARTIFACT_REPO }}/scraping-service:${{ github.sha }}
+
+      # setup gcloud CLI and authenticate with GCP
+      - id: "auth"
+        if: success()
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GCP_SA_KEY }}"
+
+      - name: "Set up Cloud SDK"
+        if: success()
+        uses: "google-github-actions/setup-gcloud@v2"
+
+      # configure Docker with Credentials
+      - name: Configure Docker
+        if: success()
+        run: |
+          gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
+
+      # deploy the Docker image to Cloud Run
+      - name: Deploy
+        if: success()
+        run: |
+          gcloud run deploy ${{ secrets.GCP_SERVICE_NAME }} --image=${{ secrets.GCP_ARTIFACT_REPO }}/scraping-service:${{ github.sha }} \
+          --allow-unauthenticated --region=${{ secrets.GCP_REGION }} --port=6003 \
+          --set-env-vars="SCRAPING_SERVICE_KEY=${{ secrets.SCRAPING_SERVICE_KEY }}"

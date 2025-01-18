@@ -11,3 +11,7 @@
 docker build -t scraping-service .
 docker run -p 6003:6003 scraping-service
 ```
+
+## CI/CD
+
+- we deploy the service to Google Cloud Run via Github Actions

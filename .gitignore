@@ -1,3 +1,4 @@
 .env
 dist
+gcp-creds.json
 node_modules
