@@ -1,9 +1,9 @@
 name: cd
 
 on:
-  # this action will only run on each push to main (continuous deployment)
+  # this action will only run on each push to master (continuous deployment)
   push:
-    branches: ["main"]
+    branches: ["master"]
 
 jobs:
   build-publish-deploy:
