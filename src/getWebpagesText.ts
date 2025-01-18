@@ -6,7 +6,7 @@ export const getWebpageText = async (url: string, context: BrowserContext) => {
     const page = await context.newPage();
     let text = '';
     try {
-        await page.goto(url);
+        await page.goto(url, { waitUntil: 'networkidle' });
         text = (await page.locator('body').textContent()) || '';
     } catch (error) {
         console.error(`Error fetching webpage text for ${url}:`, error);
